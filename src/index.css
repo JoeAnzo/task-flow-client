@@ -1,0 +1,55 @@
+@import "tailwindcss";
+@import "react-datepicker/dist/react-datepicker.css";
+
+.todo-datepicker-popper .react-datepicker {
+  overflow: hidden;
+  border: 1px solid rgb(51 65 85);
+  border-radius: 0.75rem;
+  background-color: rgb(15 23 42);
+  color: rgb(241 245 249);
+  font-family: inherit;
+}
+
+.todo-datepicker-popper .react-datepicker__header,
+.todo-datepicker-popper .react-datepicker__time-container,
+.todo-datepicker-popper .react-datepicker__time,
+.todo-datepicker-popper .react-datepicker__time-box {
+  border-color: rgb(51 65 85);
+  background-color: rgb(15 23 42);
+}
+
+.todo-datepicker-popper .react-datepicker__current-month,
+.todo-datepicker-popper .react-datepicker-time__header,
+.todo-datepicker-popper .react-datepicker__day-name,
+.todo-datepicker-popper .react-datepicker__time-list-item {
+  color: rgb(226 232 240);
+}
+
+.todo-datepicker-popper .react-datepicker__day {
+  color: rgb(203 213 225);
+}
+
+.todo-datepicker-popper .react-datepicker__day:hover,
+.todo-datepicker-popper .react-datepicker__time-list-item:hover {
+  background-color: rgb(51 65 85);
+}
+
+.todo-datepicker-popper .react-datepicker__day--outside-month {
+  color: rgb(100 116 139);
+}
+
+.todo-datepicker-popper .react-datepicker__day--selected,
+.todo-datepicker-popper .react-datepicker__day--keyboard-selected,
+.todo-datepicker-popper .react-datepicker__time-list-item--selected {
+  background-color: rgb(99 102 241);
+  color: white;
+}
+
+.todo-datepicker-popper .react-datepicker__day--selected:hover,
+.todo-datepicker-popper .react-datepicker__day--keyboard-selected:hover {
+  background-color: rgb(129 140 248);
+}
+
+.todo-datepicker-popper .react-datepicker__navigation-icon::before {
+  border-color: rgb(203 213 225);
+}
