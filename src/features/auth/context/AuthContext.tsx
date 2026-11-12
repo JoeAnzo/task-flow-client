@@ -9,7 +9,7 @@ import {
 import { useQuery,useQueryClient } from "@tanstack/react-query";
 import type { loginInput } from "../schemas/auth.schema";
 
-import { getCurrentUser,loginUser,logoutUser,type User } from "../services/auth.service";
+import { getCurrentUser,loginUser,loginWithGoogle as exchangeGoogleCode,logoutUser,type User } from "../services/auth.service";
 
 
 const userQueryKey = ["auth","user"] as const;
@@ -19,6 +19,7 @@ type AuthContextValue = {
     isLoading:boolean;
     error:Error | null;
     login: (credentials:loginInput) => Promise<void>;
+    loginWithGoogle: (code:string) => Promise<void>;
     logout:() => Promise<void>;
 }
 
@@ -49,6 +50,21 @@ export function AuthProvider({children}:{children:ReactNode}){
         await queryClient.invalidateQueries({queryKey:["todos"]})
     }, [queryClient, userQuery.refetch])
 
+    const loginWithGoogle = useCallback(async (code:string) => {
+        await exchangeGoogleCode(code)
+        const result = await userQuery.refetch();
+
+        if (result.isError){
+            throw result.error;
+        }
+
+        if (!result.data){
+            throw new Error("Google login succeeded, but the server returned no user.")
+        }
+
+        await queryClient.invalidateQueries({queryKey:["todos"]})
+    }, [queryClient, userQuery.refetch])
+
     const logout = useCallback(async () => {
         await logoutUser()
 
@@ -62,8 +78,9 @@ export function AuthProvider({children}:{children:ReactNode}){
         isLoading:userQuery.isPending,
         error:userQuery.error ?? null,
         login,
+        loginWithGoogle,
         logout,
-    }),[userQuery.data,userQuery.isPending,userQuery.error,login,logout])
+    }),[userQuery.data,userQuery.isPending,userQuery.error,login,loginWithGoogle,logout])
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

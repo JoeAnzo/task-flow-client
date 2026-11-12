@@ -46,6 +46,10 @@ export async function loginUser(credentials:loginInput):Promise<void>{
     })
 }
 
+export async function loginWithGoogle(code:string):Promise<void>{
+    await postWithCsrf("/api/v1/auth/google/",{code})
+}
+
 export async function registerUser(credentials:signUpInput):Promise<void> {
     await postWithCsrf("/api/v1/auth/registration/",{
         username:credentials.username,
