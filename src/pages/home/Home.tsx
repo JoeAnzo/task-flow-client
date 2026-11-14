@@ -51,7 +51,6 @@ export default function Home() {
             </h1>
             <p className="mt-4 mb-2 text-sm font-semibold tracking-wide text-indigo-400">YOUR WORKSPACE</p>
             <p className="text-lg font-medium text-slate-200">{today}</p>
-            <p className="mt-2 text-slate-400">One step at a time. You’ve got this.</p>
           </div>
           <div aria-label={`Current time ${currentTime}`} className="mt-1 flex shrink-0 items-center gap-2 text-sm font-medium tabular-nums text-slate-300 sm:text-base">
             <Clock3 aria-hidden="true" className="size-5 text-indigo-400" />
