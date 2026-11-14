@@ -38,6 +38,7 @@ export default function Home() {
     second:"2-digit",
     hour12:true,
   }).format(now)
+  const displayName = user?.google_display_name?.trim() || user?.username || "there"
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
@@ -45,11 +46,11 @@ export default function Home() {
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-8 sm:py-16">
         <header className="mb-8 flex items-start justify-between gap-4">
           <div>
-            <p className="mb-3 text-sm text-slate-400">
-              Welcome back, <span className="font-medium text-slate-100">{user?.username ?? "there"}</span>
-            </p>
-            <p className="mb-3 text-sm font-semibold tracking-wide text-indigo-400">YOUR WORKSPACE</p>
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{today}</h1>
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              Welcome back, <span className="capitalize">{displayName}</span>
+            </h1>
+            <p className="mt-4 mb-2 text-sm font-semibold tracking-wide text-indigo-400">YOUR WORKSPACE</p>
+            <p className="text-lg font-medium text-slate-200">{today}</p>
             <p className="mt-2 text-slate-400">One step at a time. You’ve got this.</p>
           </div>
           <div aria-label={`Current time ${currentTime}`} className="mt-1 flex shrink-0 items-center gap-2 text-sm font-medium tabular-nums text-slate-300 sm:text-base">
