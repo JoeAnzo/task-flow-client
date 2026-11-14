@@ -2,11 +2,13 @@ import { useEffect, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Clock3 } from "lucide-react"
 import { getUsersTodos } from "./services/todos.service"
+import { useAuth } from "../../features/auth/context/AuthContext"
 import AppNav from "./components/AppNav"
 import TodoItem from "./components/TodoItem"
 import AddTodoForm from "./components/AddTodoForm"
 
 export default function Home() {
+  const { user } = useAuth()
   const [now, setNow] = useState(() => new Date())
 
   useEffect(() => {
@@ -43,6 +45,9 @@ export default function Home() {
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-8 sm:py-16">
         <header className="mb-8 flex items-start justify-between gap-4">
           <div>
+            <p className="mb-3 text-sm text-slate-400">
+              Welcome back, <span className="font-medium text-slate-100">{user?.username ?? "there"}</span>
+            </p>
             <p className="mb-3 text-sm font-semibold tracking-wide text-indigo-400">YOUR WORKSPACE</p>
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{today}</h1>
             <p className="mt-2 text-slate-400">One step at a time. You’ve got this.</p>

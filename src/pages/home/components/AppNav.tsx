@@ -3,9 +3,8 @@ import { Link, useNavigate } from "react-router-dom"
 import { Bell, MessageCircle } from "lucide-react"
 
 export default function AppNav() {
-    const {user,logout} = useAuth()
+    const {logout} = useAuth()
     const navigate = useNavigate()
-    const displayName = user?.google_display_name?.trim() || user?.username || "there"
 
     async function handleLogout() {
         await logout();
@@ -18,9 +17,6 @@ export default function AppNav() {
           Taskflow
         </Link>
         <div className="flex items-center gap-3">
-          <span className="hidden text-sm text-slate-400 sm:inline">
-            Hello, <span className="font-medium text-slate-100">{displayName}</span>
-          </span>
           <button
             aria-label="Notifications (coming soon)"
             className="flex size-10 cursor-not-allowed items-center justify-center rounded-lg border border-slate-800 text-slate-600"
