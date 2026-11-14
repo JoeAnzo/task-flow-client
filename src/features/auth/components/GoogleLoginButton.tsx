@@ -34,7 +34,7 @@ export function GoogleLoginButton(){
 
     return (
         <button
-            className="flex items-center justify-center gap-2 w-full rounded-lg border border-slate-600 bg-white px-4 py-2.5 font-semibold text-slate-900 transition hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300"
+            className="flex items-center justify-center gap-1 w-full rounded-lg border border-slate-600 bg-white px-4 py-2.5 font-semibold text-slate-900 transition hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300"
             type="button"
             onClick={startGoogleLogin}
         >
