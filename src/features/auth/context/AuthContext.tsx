@@ -51,19 +51,11 @@ export function AuthProvider({children}:{children:ReactNode}){
     }, [queryClient, userQuery.refetch])
 
     const loginWithGoogle = useCallback(async (code:string) => {
-        await exchangeGoogleCode(code)
-        const result = await userQuery.refetch();
-
-        if (result.isError){
-            throw result.error;
-        }
-
-        if (!result.data){
-            throw new Error("Google login succeeded, but the server returned no user.")
-        }
-
+        const user = await exchangeGoogleCode(code)
+        await queryClient.cancelQueries({queryKey:userQueryKey})
+        queryClient.setQueryData(userQueryKey, user)
         await queryClient.invalidateQueries({queryKey:["todos"]})
-    }, [queryClient, userQuery.refetch])
+    }, [queryClient])
 
     const logout = useCallback(async () => {
         await logoutUser()

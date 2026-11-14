@@ -11,10 +11,35 @@ export type User = {
     google_display_name:string | null;
 }
 
+function normalizeUser(value:unknown):User | null {
+    if (!value || typeof value !== "object") {
+        return null;
+    }
+
+    const user = value as Record<string, unknown>;
+    const id = typeof user.id === "number" ? user.id : user.pk;
+    if (
+        typeof id !== "number"
+        || typeof user.username !== "string"
+        || typeof user.email !== "string"
+    ) {
+        return null;
+    }
+
+    return {
+        id,
+        username:user.username,
+        email:user.email,
+        google_display_name:typeof user.google_display_name === "string"
+            ? user.google_display_name
+            : null,
+    };
+}
+
 export async function getCurrentUser():Promise<User | null>{
     try {
-        const {data} = await apiClient.get<User>('/api/v1/auth/user/')
-        return data;
+        const {data} = await apiClient.get<unknown>('/api/v1/auth/user/')
+        return normalizeUser(data);
     } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status == 401){
             return null;
@@ -26,15 +51,16 @@ export async function getCurrentUser():Promise<User | null>{
 
 async function postWithCsrf(
     url:string,
-    payload:unknown = {}
-):Promise<void>{
+    payload:unknown = {},
+):Promise<unknown>{
     const csrfToken = await getCsrfToken();
 
-    await apiClient.post(url,payload,{
+    const {data} = await apiClient.post<unknown>(url,payload,{
         headers:{
             "X-CSRFToken":csrfToken
         }
     })
+    return data
 }
 
 
@@ -47,8 +73,23 @@ export async function loginUser(credentials:loginInput):Promise<void>{
     })
 }
 
-export async function loginWithGoogle(code:string):Promise<void>{
-    await postWithCsrf("/api/v1/auth/google/",{code})
+export async function loginWithGoogle(code:string):Promise<User>{
+    const response = await postWithCsrf("/api/v1/auth/google/",{code})
+    const responseUser = normalizeUser(response)
+        ?? (
+            response && typeof response === "object"
+                ? normalizeUser((response as Record<string, unknown>).user)
+                : null
+        )
+    if (responseUser) {
+        return responseUser
+    }
+
+    const currentUser = await getCurrentUser()
+    if (!currentUser) {
+        throw new Error("Google login succeeded, but the server returned no user.")
+    }
+    return currentUser
 }
 
 export async function registerUser(credentials:signUpInput):Promise<void> {
