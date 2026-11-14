@@ -8,6 +8,7 @@ export type User = {
     id:number;
     username:string;
     email:string;
+    google_display_name:string | null;
 }
 
 export async function getCurrentUser():Promise<User | null>{
