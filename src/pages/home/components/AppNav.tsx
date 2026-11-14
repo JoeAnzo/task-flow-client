@@ -13,7 +13,12 @@ export default function AppNav() {
   return (
       <nav className="flex items-center justify-between gap-4 border-b border-white/10 px-4 py-4 sm:px-8">
         <Link className="flex items-center gap-2 text-lg font-bold tracking-tight text-slate-100" to="/">
-          <span className="flex size-9 items-center justify-center rounded-xl bg-indigo-500 text-white">T</span>
+          <img
+            alt=""
+            aria-hidden="true"
+            className="size-9 rounded-xl object-cover"
+            src="/android-chrome-512x512.png"
+          />
           Taskflow
         </Link>
         <div className="flex items-center gap-3">
