@@ -48,6 +48,7 @@ export function AuthProvider({children}:{children:ReactNode}){
         }
 
         await queryClient.invalidateQueries({queryKey:["todos"]})
+        await queryClient.invalidateQueries({queryKey:["notifications"]})
     }, [queryClient, userQuery.refetch])
 
     const loginWithGoogle = useCallback(async (code:string) => {
@@ -55,6 +56,7 @@ export function AuthProvider({children}:{children:ReactNode}){
         await queryClient.cancelQueries({queryKey:userQueryKey})
         queryClient.setQueryData(userQueryKey, user)
         await queryClient.invalidateQueries({queryKey:["todos"]})
+        await queryClient.invalidateQueries({queryKey:["notifications"]})
     }, [queryClient])
 
     const logout = useCallback(async () => {
@@ -63,6 +65,7 @@ export function AuthProvider({children}:{children:ReactNode}){
         queryClient.setQueryData(userQueryKey, null)
 
         queryClient.removeQueries({queryKey:["todos"]})
+        queryClient.removeQueries({queryKey:["notifications"]})
     }, [queryClient])
 
     const value = useMemo(() => ({

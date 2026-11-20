@@ -1,6 +1,7 @@
 import { Navigate,Outlet,useLocation } from "react-router-dom"
 import { LoaderCircle } from "lucide-react"
 import { useAuth } from "../context/AuthContext";
+import PushReminderPrompt from "../../push/components/PushReminderPrompt"
 
 export default function ProtectedRoutes() {
     const {user, isLoading,error} = useAuth()
@@ -29,5 +30,10 @@ export default function ProtectedRoutes() {
             />
         )
     }
-  return <Outlet/>
+  return (
+    <>
+      <PushReminderPrompt />
+      <Outlet />
+    </>
+  )
 }

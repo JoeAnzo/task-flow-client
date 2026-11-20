@@ -55,7 +55,7 @@ return (
                 <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
                     <input
-                        className="w-full rounded-lg border border-slate-700 bg-slate-950 py-2.5 pl-10 pr-3 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20"
+                        className="w-full rounded-lg border border-slate-700 bg-white py-2.5 pl-10 pr-3 text-slate-900 outline-none transition placeholder:text-slate-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20"
                         id="email"
                         type="email"
                         placeholder="you@example.com"
@@ -71,7 +71,7 @@ return (
                 <label className="block text-sm font-medium text-slate-200" htmlFor="password">Password</label>
                 <div className="relative">
                     <input
-                        className="w-full rounded-lg border border-slate-700 bg-slate-950 py-2.5 pl-10 pr-11 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20"
+                        className="w-full rounded-lg border border-slate-700 bg-white py-2.5 pl-10 pr-11 text-slate-900 outline-none transition placeholder:text-slate-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20"
                         type={showPassword ? "text" : "password"}
                         id="password"
                         placeholder="Enter your password"

@@ -3,6 +3,7 @@ import { LoginForm } from './features/auth/components/loginForm'
 import { SignUpForm } from './features/auth/components/signUpForm'
 import { GoogleCallback } from './features/auth/components/GoogleCallback'
 import Home from './pages/home/Home'
+import Notifications from './pages/notifications/Notifications'
 import ProtectedRoutes from './features/auth/components/ProtectedRoutes'
 
 
@@ -13,6 +14,7 @@ function App() {
     <Routes>
       <Route element={<ProtectedRoutes/>}>
         <Route path='/' element={<Home/>}/>
+        <Route path='/notifications' element={<Notifications/>}/>
       </Route>
       <Route path='/login' element={<LoginForm/>}/>
       <Route path='/signup' element={<SignUpForm/>}/>
