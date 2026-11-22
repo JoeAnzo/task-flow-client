@@ -8,12 +8,14 @@ export default function AddTodoForm() {
   const queryClient = useQueryClient()
   const [title, setTitle] = useState("")
   const [dueAt, setDueAt] = useState<Date | null>(null)
+  const [dueAtError, setDueAtError] = useState("")
 
   const createMutation = useMutation({
     mutationFn: createTodo,
     onSuccess: async () => {
       setTitle("")
       setDueAt(null)
+      setDueAtError("")
       await Promise.all([
         queryClient.invalidateQueries({queryKey:["todos"]}),
         queryClient.invalidateQueries({queryKey:["notifications"]}),
@@ -27,11 +29,23 @@ export default function AddTodoForm() {
     const trimmedTitle = title.trim()
     if (!trimmedTitle || !dueAt) return
 
+    if (dueAt.getTime() <= Date.now()) {
+      setDueAtError("Choose a future date and time. Tasks can't be scheduled in the past.")
+      return
+    }
+
     createMutation.mutate({
       title:trimmedTitle,
       due_at:dueAt.toISOString(),
     })
   }
+
+  const now = new Date()
+  const isDueToday = dueAt !== null && dueAt.toDateString() === now.toDateString()
+  const startOfDay = new Date(now)
+  startOfDay.setHours(0, 0, 0, 0)
+  const endOfDay = new Date(now)
+  endOfDay.setHours(23, 59, 59, 999)
 
   return (
     <form
@@ -63,7 +77,17 @@ export default function AddTodoForm() {
           className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2.5 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20"
           dateFormat="MMM d, yyyy h:mm aa"
           id="todo-due-at"
-          onChange={(date:Date | null) => setDueAt(date)}
+          minDate={now}
+          minTime={isDueToday ? now : startOfDay}
+          maxTime={endOfDay}
+          onChange={(date:Date | null) => {
+            setDueAt(date)
+            setDueAtError(
+              date && date.getTime() <= Date.now()
+                ? "Choose a future date and time. Tasks can't be scheduled in the past."
+                : "",
+            )
+          }}
           placeholderText="Choose a due date and time"
           popperClassName="todo-datepicker-popper"
           selected={dueAt}
@@ -71,6 +95,11 @@ export default function AddTodoForm() {
           timeIntervals={15}
           required
         />
+        {dueAtError && (
+          <p className="mt-2 text-sm text-rose-400" role="alert">
+            {dueAtError}
+          </p>
+        )}
       </div>
 
       {createMutation.isError && (
@@ -81,7 +110,7 @@ export default function AddTodoForm() {
 
       <button
         className="flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-500 px-4 py-2.5 font-semibold text-white transition hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
-        disabled={createMutation.isPending || !title.trim() || !dueAt}
+        disabled={createMutation.isPending || !title.trim() || !dueAt || Boolean(dueAtError)}
         type="submit"
       >
         {createMutation.isPending ? (

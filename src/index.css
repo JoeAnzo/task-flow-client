@@ -17,6 +17,7 @@
 }
 
 .reminder-prompt-enter {
+  transform: translate(-50%, -50%);
   animation: reminder-slide-in 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 

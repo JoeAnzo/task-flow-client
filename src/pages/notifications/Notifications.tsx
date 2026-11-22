@@ -194,7 +194,7 @@ export default function Notifications() {
           <section
             aria-labelledby="clear-notifications-title"
             aria-modal="true"
-            className="reminder-prompt-enter fixed left-1/2 top-1/2 z-50 max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl border border-indigo-400/30 bg-slate-900 p-5 shadow-2xl shadow-black/40 sm:p-6"
+            className="reminder-prompt-enter fixed left-1/2 top-1/2 z-50 max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-xl overflow-y-auto rounded-2xl border border-indigo-400/30 bg-slate-900 p-5 shadow-2xl shadow-black/40 sm:p-6"
             role="alertdialog"
           >
             <h2 className="font-semibold text-slate-100" id="clear-notifications-title">
