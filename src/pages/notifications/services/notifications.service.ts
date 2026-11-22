@@ -58,3 +58,8 @@ export async function markNotificationsRead(ids: number[]): Promise<Notification
   const headers = await getCsrfHeaders()
   return Promise.all(ids.map((id) => markNotificationReadWithHeaders(id, headers)))
 }
+
+export async function clearNotifications(): Promise<void> {
+  const headers = await getCsrfHeaders()
+  await apiClient.delete('/api/v1/nortifications/', { headers })
+}

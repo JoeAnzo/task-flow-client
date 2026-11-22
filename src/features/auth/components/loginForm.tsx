@@ -40,7 +40,15 @@ return (
             onSubmit={handleSubmit(onSubmit)}
         >
             <header className="space-y-2">
-                <p className="text-sm font-semibold tracking-wide text-indigo-400">TaskFlow</p>
+                <Link className="mb-4 inline-flex items-center gap-3 text-2xl font-bold tracking-tight text-slate-100" to="/">
+                    <img
+                        alt=""
+                        aria-hidden="true"
+                        className="size-10 rounded-xl object-cover"
+                        src="/android-chrome-512x512.png"
+                    />
+                    TaskFlow
+                </Link>
                 <h1 className="text-3xl font-bold tracking-tight">Welcome back</h1>
                 <p className="text-sm text-slate-400">Sign in to continue to your tasks.</p>
             </header>
@@ -50,6 +58,11 @@ return (
                 <span>or</span>
                 <span className="h-px flex-1 bg-slate-700" />
             </div>
+            {errors.root?.server && (
+                <p role="alert" className="text-sm text-rose-300">
+                    {errors.root.server.message}
+                </p>
+            )}
             <div className="space-y-2">
                 <label className="block text-sm font-medium text-slate-200" htmlFor="email">Email</label>
                 <div className="relative">
@@ -104,11 +117,6 @@ return (
                 Don&apos;t have an account?{' '}
                 <Link className="font-medium text-indigo-400 hover:text-indigo-300" to="/signup">Sign up</Link>
             </p>
-            {errors.root?.server && (
-            <p role="alert" className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-300">
-                {errors.root.server.message}
-            </p>
-            )}
         </form>
     </main>
 )

@@ -1,6 +1,31 @@
 @import "tailwindcss";
 @import "react-datepicker/dist/react-datepicker.css";
 
+@keyframes reminder-slide-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -150vh);
+  }
+  70% {
+    opacity: 1;
+    transform: translate(-50%, calc(-50% - 12px));
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.reminder-prompt-enter {
+  animation: reminder-slide-in 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reminder-prompt-enter {
+    animation: none;
+  }
+}
+
 .todo-datepicker-popper .react-datepicker {
   overflow: hidden;
   border: 1px solid rgb(51 65 85);

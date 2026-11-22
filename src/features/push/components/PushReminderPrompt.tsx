@@ -6,6 +6,7 @@ type PromptStatus = "checking" | "ready" | "subscribing" | "subscribed" | "denie
 
 export default function PushReminderPrompt() {
   const [status, setStatus] = useState<PromptStatus>("checking")
+  const [errorMessage, setErrorMessage] = useState("")
   const [dismissed, setDismissed] = useState(false)
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null)
 
@@ -43,8 +44,9 @@ export default function PushReminderPrompt() {
         } else {
           setStatus("ready")
         }
-      } catch {
+      } catch (error) {
         if (active) {
+          setErrorMessage(error instanceof Error ? error.message : "Could not set up reminders.")
           setStatus("error")
         }
       }
@@ -57,6 +59,7 @@ export default function PushReminderPrompt() {
   }, [])
 
   async function handleSubscribe() {
+    setErrorMessage("")
     setStatus("subscribing")
 
     try {
@@ -73,7 +76,8 @@ export default function PushReminderPrompt() {
       setRegistration(serviceWorker)
       await createPushSubscription(serviceWorker)
       setStatus("subscribed")
-    } catch {
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : "Could not set up reminders.")
       setStatus("error")
     }
   }
@@ -85,7 +89,7 @@ export default function PushReminderPrompt() {
   return (
     <aside
       aria-label="Task reminders"
-      className="fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-xl items-start gap-4 rounded-2xl border border-indigo-400/30 bg-slate-900 p-4 shadow-2xl shadow-black/40 sm:p-5"
+      className="reminder-prompt-enter fixed left-1/2 top-1/2 z-50 flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-xl items-start gap-4 overflow-y-auto rounded-2xl border border-indigo-400/30 bg-slate-900 p-4 shadow-2xl shadow-black/40 sm:p-5"
     >
       <BellRing aria-hidden="true" className="mt-1 size-5 shrink-0 text-indigo-300" />
       <div className="min-w-0 flex-1">
@@ -100,7 +104,7 @@ export default function PushReminderPrompt() {
         )}
         {status === "error" && (
           <p className="mt-2 text-sm text-rose-300" role="alert">
-            Could not set up reminders. Please try again.
+            {errorMessage || "Could not set up reminders. Please try again."}
           </p>
         )}
         {status !== "denied" && (

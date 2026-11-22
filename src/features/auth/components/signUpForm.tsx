@@ -2,7 +2,6 @@ import { type signUpInput,signUpSchema } from '../schemas/auth.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from 'react-router-dom'
 import {useForm} from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
 import { registerUser } from '../services/auth.service'
 import { GoogleLoginButton } from './GoogleLoginButton'
 import { Eye, EyeOff, Lock, Mail, User } from 'lucide-react'
@@ -12,9 +11,9 @@ import { useState } from 'react'
 export const SignUpForm = () => {
 
 
-const navigate = useNavigate()
 const [showPassword, setShowPassword] = useState(false)
 const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+const [registeredEmail, setRegisteredEmail] = useState<string | null>(null)
 
 const {
     register,
@@ -28,13 +27,34 @@ const {
 const onSubmit = async (data:signUpInput) => {
     try {
         await registerUser(data);
-        navigate("/")
+        setRegisteredEmail(data.email)
     } catch {
         setError("root.server",{
             type:"server",
             message:"sign-up failed. Please check your details and try again"
         })
     }
+}
+
+if (registeredEmail) {
+    return (
+        <main className="flex min-h-screen items-center justify-center bg-slate-950 px-4 py-12 text-slate-100">
+            <section className="w-full max-w-md space-y-5 rounded-2xl border border-white/10 bg-slate-900 p-8 text-center shadow-2xl shadow-black/30">
+                <Link className="mx-auto inline-flex items-center gap-3 text-2xl font-bold tracking-tight text-slate-100" to="/">
+                    <img alt="" aria-hidden="true" className="size-10 rounded-xl object-cover" src="/android-chrome-512x512.png" />
+                    TaskFlow
+                </Link>
+                <h1 className="text-3xl font-bold tracking-tight">Check your email</h1>
+                <p className="text-sm text-slate-300">
+                    We sent a confirmation link to <strong className="text-white">{registeredEmail}</strong>.
+                    Open the link to verify your email, then log in to your account.
+                </p>
+                <Link className="inline-block rounded-lg bg-indigo-500 px-4 py-2.5 font-semibold text-white transition hover:bg-indigo-400" to="/login">
+                    Go to login
+                </Link>
+            </section>
+        </main>
+    )
 }
 
 return(
@@ -44,7 +64,15 @@ return(
             onSubmit={handleSubmit(onSubmit)}
         >
             <header className="space-y-2">
-                <p className="text-sm font-semibold tracking-wide text-indigo-400">TaskFlow</p>
+                <Link className="mb-4 inline-flex items-center gap-3 text-2xl font-bold tracking-tight text-slate-100" to="/">
+                    <img
+                        alt=""
+                        aria-hidden="true"
+                        className="size-10 rounded-xl object-cover"
+                        src="/android-chrome-512x512.png"
+                    />
+                    TaskFlow
+                </Link>
                 <h1 className="text-3xl font-bold tracking-tight">Create your account</h1>
                 <p className="text-sm text-slate-400">Sign up to start organizing your tasks.</p>
             </header>

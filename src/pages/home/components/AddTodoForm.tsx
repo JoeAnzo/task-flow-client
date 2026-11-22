@@ -14,7 +14,10 @@ export default function AddTodoForm() {
     onSuccess: async () => {
       setTitle("")
       setDueAt(null)
-      await queryClient.invalidateQueries({queryKey:["todos"]})
+      await Promise.all([
+        queryClient.invalidateQueries({queryKey:["todos"]}),
+        queryClient.invalidateQueries({queryKey:["notifications"]}),
+      ])
     },
   })
 

@@ -101,6 +101,10 @@ export async function registerUser(credentials:signUpInput):Promise<void> {
     })
 }
 
+export async function verifyEmail(key:string):Promise<void> {
+    await postWithCsrf("/api/v1/auth/registration/verify-email/", {key})
+}
+
 export async function refreshToken():Promise<void>{
     await postWithCsrf("/api/v1/auth/token/refresh/");
 }

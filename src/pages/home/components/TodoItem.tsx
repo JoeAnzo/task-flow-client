@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react"
+import { useEffect, useRef, useState, type FormEvent } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import DatePicker from "react-datepicker"
 import { Check, LoaderCircle, Pencil, Save, Trash2, X } from "lucide-react"
@@ -12,8 +12,39 @@ type TodoItemProps = {
 export default function TodoItem({todo}:TodoItemProps) {
   const queryClient = useQueryClient()
   const [isEditing, setIsEditing] = useState(false)
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false)
   const [editedTitle, setEditedTitle] = useState(todo.title)
   const [editedDueAt, setEditedDueAt] = useState<Date | null>(() => new Date(todo.due_at))
+  const cancelDeleteButtonRef = useRef<HTMLButtonElement>(null)
+  const confirmDeleteButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (!isDeleteConfirmationOpen) {
+      return
+    }
+
+    cancelDeleteButtonRef.current?.focus()
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setIsDeleteConfirmationOpen(false)
+      } else if (event.key === "Tab") {
+        const firstButton = cancelDeleteButtonRef.current
+        const lastButton = confirmDeleteButtonRef.current
+
+        if (event.shiftKey && document.activeElement === firstButton) {
+          event.preventDefault()
+          lastButton?.focus()
+        } else if (!event.shiftKey && document.activeElement === lastButton) {
+          event.preventDefault()
+          firstButton?.focus()
+        }
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [isDeleteConfirmationOpen])
 
   const completionMutation = useMutation({
     mutationFn: ({id, completed}:{id:number; completed:boolean}) =>
@@ -48,7 +79,10 @@ export default function TodoItem({todo}:TodoItemProps) {
       }
     },
     onSettled: async () => {
-      await queryClient.invalidateQueries({queryKey:["todos"]})
+      await Promise.all([
+        queryClient.invalidateQueries({queryKey:["todos"]}),
+        queryClient.invalidateQueries({queryKey:["notifications"]}),
+      ])
     },
   })
 
@@ -60,7 +94,10 @@ export default function TodoItem({todo}:TodoItemProps) {
       )
     },
     onSettled: async () => {
-      await queryClient.invalidateQueries({queryKey:["todos"]})
+      await Promise.all([
+        queryClient.invalidateQueries({queryKey:["todos"]}),
+        queryClient.invalidateQueries({queryKey:["notifications"]}),
+      ])
     },
   })
 
@@ -76,7 +113,10 @@ export default function TodoItem({todo}:TodoItemProps) {
       setIsEditing(false)
     },
     onSettled: async () => {
-      await queryClient.invalidateQueries({queryKey:["todos"]})
+      await Promise.all([
+        queryClient.invalidateQueries({queryKey:["todos"]}),
+        queryClient.invalidateQueries({queryKey:["notifications"]}),
+      ])
     },
   })
 
@@ -239,17 +279,53 @@ export default function TodoItem({todo}:TodoItemProps) {
         aria-label={`Delete ${todo.title}`}
         className="flex size-9 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-rose-500/10 hover:text-rose-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-400 disabled:cursor-not-allowed disabled:opacity-50"
         disabled={isUpdating}
-        onClick={() => {
-          if (window.confirm(`Delete "${todo.title}"?`)) {
-            deleteMutation.mutate(todo.id)
-          }
-        }}
+        onClick={() => setIsDeleteConfirmationOpen(true)}
         type="button"
       >
         {deleteMutation.isPending
           ? <LoaderCircle aria-hidden="true" className="size-4 animate-spin" />
           : <Trash2 aria-hidden="true" className="size-4" />}
       </button>
+
+      {isDeleteConfirmationOpen && (
+        <>
+          <div aria-hidden="true" className="fixed inset-0 z-40 bg-black/70" />
+          <section
+            aria-labelledby={`delete-todo-title-${todo.id}`}
+            aria-modal="true"
+            className="reminder-prompt-enter fixed left-1/2 top-1/2 z-50 max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl border border-indigo-400/30 bg-slate-900 p-5 shadow-2xl shadow-black/40 sm:p-6"
+            role="alertdialog"
+          >
+            <h2 className="font-semibold text-slate-100" id={`delete-todo-title-${todo.id}`}>
+              Delete this todo?
+            </h2>
+            <p className="mt-2 break-words text-sm text-slate-400">
+              Are you sure you want to delete “{todo.title}”? This action cannot be undone.
+            </p>
+            <div className="mt-5 flex justify-end gap-3">
+              <button
+                className="rounded-lg border border-slate-700 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-300"
+                onClick={() => setIsDeleteConfirmationOpen(false)}
+                ref={cancelDeleteButtonRef}
+                type="button"
+              >
+                Cancel
+              </button>
+              <button
+                className="rounded-lg bg-rose-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-rose-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-300"
+                onClick={() => {
+                  setIsDeleteConfirmationOpen(false)
+                  deleteMutation.mutate(todo.id)
+                }}
+                ref={confirmDeleteButtonRef}
+                type="button"
+              >
+                Delete todo
+              </button>
+            </div>
+          </section>
+        </>
+      )}
     </li>
   )
 }

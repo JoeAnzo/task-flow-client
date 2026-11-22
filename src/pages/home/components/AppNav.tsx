@@ -45,15 +45,14 @@ export default function AppNav() {
               </span>
             )}
           </Link>
-          <button
-            aria-label="AI chat (coming soon)"
-            className="flex size-10 cursor-not-allowed items-center justify-center rounded-lg border border-slate-800 text-slate-600"
-            disabled
-            title="AI chat coming soon"
-            type="button"
+          <Link
+            aria-label="AI task planning chat"
+            className="flex size-10 items-center justify-center rounded-lg border border-slate-700 text-slate-300 transition hover:border-slate-500 hover:bg-slate-800 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+            title="AI task planning chat"
+            to="/chat"
           >
             <MessageCircle aria-hidden="true" className="size-5" />
-          </button>
+          </Link>
           <button
             className="rounded-lg border border-slate-700 px-3 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:bg-slate-800 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
             type="button"
